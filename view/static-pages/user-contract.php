@@ -12,7 +12,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/view/layout/base/header.php';
 
             <div class="row">
                 <section>
-                    <p>Пользовательское соглашение</p>
+                    <p>Админ всегда прав</p>
                 </section>
 
             </div>

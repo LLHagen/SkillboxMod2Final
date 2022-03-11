@@ -1,11 +1,6 @@
 <?php
 
-if (!empty($errors)) {
-    echo '<br>';
-    foreach ($errors as $error) {
-        echo $error . '<br>';
-    }
-}
+
 ?>
 
 
@@ -91,6 +86,14 @@ if (!empty($errors)) {
 
         <?php
         // TODO Вывод ошибок
+        if (!empty($errors)) {
+            foreach ($errors as $errorsInput) {
+                foreach ($errorsInput as $error) {
+                    echo $error . '<br>';
+                }
+            }
+            echo '<br>';
+        }
         ?>
 
 
@@ -98,12 +101,12 @@ if (!empty($errors)) {
         <div class="form-group input-group">
             <span class="input-group-addon">@</span>
             <span class="has-float-label">
-                <input class="form-control" id="email" name="email" type="email" placeholder="name@example.com" value="<?= $users['email'] ?? ''?>"/>
+                <input class="form-control" id="email" name="email" type="email" placeholder="name@example.com" value="<?= $request['email'] ?? ''?>"/>
                 <label for="email">E-mail</label>
             </span>
         </div>
         <div class="form-group has-float-label">
-            <input class="form-control" id="password" name="password" type="password" value="<?= $users['password'] ?? ''?>" placeholder="••••••••"/>
+            <input class="form-control" id="password" name="password" type="password" value="<?= $request['password'] ?? ''?>" placeholder="••••••••"/>
             <label for="password">Пароль</label>
         </div>
 

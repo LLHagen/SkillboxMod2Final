@@ -5,7 +5,7 @@ use App\View\View;
 
 class StaticPageController
 {
-    public function profile()
+    public function userContract()
     {
         return new View('static-pages/user-contract', ['title' => 'Личный кабинет']);
     }

@@ -3,8 +3,11 @@
 use App\Application;
 use App\Controllers\HomeController;
 use App\Controllers\StaticPageController;
+use App\Controllers\RegisterController;
 use App\Controllers\PostController;
+use App\Controllers\LoginController;
 use App\Controllers\UserController;
+use App\Controllers\TestController;
 use App\Router;
 
 error_reporting(E_ALL);
@@ -15,16 +18,25 @@ require_once __DIR__ . '/bootstrap.php';
 $router = new Router();
 
 $router->get('',      [HomeController::class, 'index']);
-$router->get('profile', [StaticPageController::class, 'profile']);
 $router->get('post/*', [PostController::class, 'index']);
-$router->get('test/*/test2/*', [StaticPageController::class, 'test']);
+$router->get('user-contract', [StaticPageController::class, 'userContract']);
 
 
-$router->get('registration', [UserController::class, 'indexRegistration']);
-$router->post('registration', [UserController::class, 'registration']);
+$router->get('registration', [RegisterController::class, 'index']);
+$router->post('registration', [RegisterController::class, 'registration']);
 
-$router->get('login', [UserController::class, 'login']);
-$router->post('login', [UserController::class, 'verification']);
+$router->get('login', [LoginController::class, 'login']);
+$router->post('login', [LoginController::class, 'auth']);
+$router->get('logout', [LoginController::class, 'logout']);
+
+
+
+$router->get('profile', [UserController::class, 'index']);
+$router->post('profile', [UserController::class, 'update']);
+
+
+$router->get('test', [TestController::class, 'index']);
+$router->post('test', [TestController::class, 'testPost']);
 
 $application = new Application($router);
 

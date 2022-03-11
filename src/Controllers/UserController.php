@@ -1,58 +1,58 @@
 <?php
 namespace App\Controllers;
 
+use App\Libs\Auth;
+use App\Libs\Session;
+use App\Libs\Upload;
+use App\Libs\Validator;
 use App\Model\User;
 use App\View\View;
+use http\Env\Request;
 
 class UserController
 {
-    public function indexRegistration()
+    public function index()
     {
+        Session::init();
+        $userName = Auth::user();
 
-        $users = User::get()->toArray();;
-        return new View('auth/registration', ['title' => 'Registration', 'users' => $users]);
+        if ($userName) {
+            $user = User::all()->where('email', $userName)->first();
+        }
+        return new View('profile/profile', ['title' => 'Profile', 'user' => $user ?? '']);
     }
 
-    public function login()
+    public function update()
     {
-        $users = User::get()->toArray();;
-        return new View('auth/login', ['title' => 'Registration', 'users' => $users]);
-    }
+        Session::init();
+        $userName = Auth::user();
 
-    public function registration()
-    {
-        $errors = [];
-        if (empty($_POST['FIO'])) {
-            $errors[] = 'Заполните поле с именем';
-        }
-        if (empty($_POST['email'])) {
-            $errors[] = 'Заполните email';
-        }
-        if (empty($_POST['password'])) {
-            $errors[] = 'Введите пароль';
-        } else {
-            if (empty($_POST['passwordTwo']) || $_POST['passwordTwo'] != $_POST['password']) {
-                $errors[] = 'Пароли не совпадают';
+        if ($userName) {
+
+            $user = User::where('email', $userName);
+
+            $validator = new Validator();
+            $attributes = $validator->validate([
+                'name' => 'required|max:100|min:2',
+                'about' => 'max:10000'
+            ]);
+
+            if (isset($_FILES['image'])) {
+                $result = Upload::uploadImage();
+                if ($result['error'] === false) {
+                    $attributes['image'] = $result['path'];
+                } else {
+                    $errors['image'] = $result['error'];
+                }
+            }
+            if (!$attributes) {
+                $errors = $errors + $validator->getErrors();
+            } else {
+                $user->update($attributes);
             }
         }
-        // TODO добавить обработку ошибки с правилами пользовательского соглашения
 
-        // TODO Сделать добавление пользователя в базу данных с помощью Illuminate\Database\Eloquent
-
-        $users = $_POST ?? 'registration';
-        return new View('auth/registration', ['title' => 'Registration', 'users' => $users, 'errors' => $errors]);
+        $user = $user->first();
+        return new View('profile/profile', ['title' => 'Profile', 'errors' => $errors ?? [], 'user' => $user ?? '']);
     }
-
-    public function verification()
-    {
-        $errors = [];
-
-        // TODO найти в базе пользователя и проверить на соответствие лоигна пароля
-
-        $users = $_POST ?? 'login';
-        return new View('auth/login', ['title' => 'Registration', 'users' => $users, 'errors' => $errors]);
-    }
-
-
-
 }

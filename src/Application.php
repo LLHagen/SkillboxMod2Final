@@ -55,7 +55,7 @@ class Application
                 }
                 http_response_code($code);
 
-                $view = new View('errors/errors', ['error' => $e->getMessage()]);
+                $view = new View('error/error', ['error' => $e->getMessage()]);
                 $view->render();
             }
         } catch (ApplicationException $e) {

@@ -1,43 +1,9 @@
 <?php
-
-
-/**
- * функция для проверки авторизации
- * @param string $login принимает логин  пользователя
- * @param string $password принимает пароль  пользователя
- * @return bool результат авторизации
- */
-function verification($login, $password)
-{
-//    $rows = getUserByLogin($login);
-//
-//    if ($rows) {
-//        // проверка пароля и авторизация
-//        if (password_verify($password, $rows[0]['password'])) {
-//            $_SESSION['login'] = $login;
-//            return $_SESSION['auth'] = true;
-//        } else {
-//            return $_SESSION['auth'] = false;
-//        }
-//    } else {
-//        return $_SESSION['auth'] = false;
-//    }
-}
-
-
-
-if (!empty($users)) {
-    var_dump($users);
-}
-if (!empty($errors)) {
-    echo '<br>';
-    foreach ($errors as $error) {
-        echo $error . '<br>';
-    }
+\App\Libs\Session::init();
+if (\App\Libs\Auth::user()) {
+    header('Location: /profile');
 }
 ?>
-
-
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css"/>
 
@@ -119,43 +85,59 @@ if (!empty($errors)) {
         <legend class="m-b-1 text-xs-center">Регистрация</legend>
 
         <?php
-        // TODO Вывод ошибок
+        // TODO Вывод ошибок сделать красивым
+        if (!empty($errors)) {
+            foreach ($errors as $errorsInput) {
+                foreach ($errorsInput as $error) {
+                    echo $error . '<br>';
+                }
+            }
+            echo '<br>';
+        }
+
         ?>
 
 
         <div class="form-group has-float-label">
             <span class="has-float-label">
-                <input class="form-control" id="FIO" name="FIO" type="text" placeholder="ФИО" value="<?= $users['FIO'] ?? ''?>"/>
-                <label for="FIO">ФИО</label>
+                <input class="form-control" id="name" name="name" type="text" placeholder="ФИО" value="<?= $request['name'] ?? ''?>"/>
+                <label for="name">ФИО</label>
             </span>
         </div>
         <div class="form-group input-group">
             <span class="input-group-addon">@</span>
             <span class="has-float-label">
-                <input class="form-control" id="email" name="email" type="email" placeholder="name@example.com" value="<?= $users['email'] ?? ''?>"/>
+                <input class="form-control" id="email" name="email" type="text" placeholder="name@example.com" value="<?= $request['email'] ?? ''?>"/>
                 <label for="email">E-mail</label>
             </span>
         </div>
         <div class="form-group has-float-label">
-            <input class="form-control" id="password" name="password" type="password" value="<?= $users['password'] ?? ''?>" placeholder="••••••••"/>
+            <input class="form-control" id="password" name="password" type="password" value="<?= $request['password'] ?? ''?>" placeholder="••••••••"/>
             <label for="password">Пароль</label>
         </div>
         <div class="form-group has-float-label">
-            <input class="form-control" id="passwordTwo" name="passwordTwo" type="password" value="<?= $users['passwordTwo'] ?? ''?>" placeholder="••••••••"/>
+            <input class="form-control" id="passwordTwo" name="passwordTwo" type="password" value="<?= $request['passwordTwo'] ?? ''?>" placeholder="••••••••"/>
             <label for="password">Пароль повторно</label>
         </div>
         <div class="form-group">
             <label class="custom-control custom-checkbox">
-                <input class="custom-control-input" type="checkbox"/>
+                <input class="custom-control-input" name="acceptRules" type="checkbox" <? if (!empty($request['acceptRules'])) echo 'checked';?>/>
                 <span class="custom-control-indicator"></span>
                 <span class="custom-control-description">
-                Согласен с правиласми
-                <a href="#">пользовательского соглашения</a>
-            </span>
+                    Согласен с правиласми
+                    <a href="/user-contract">пользовательского соглашения</a>
+                </span>
             </label>
         </div>
         <div class="text-xs-center">
             <button class="btn btn-block btn-primary" type="submit">Регистрация</button>
         </div>
+
+        <span class="custom-control-description">
+            <br>
+            Или
+            <a href="/login">Войдите</a>
+        </span>
+
     </form>
 </div>
